@@ -1,3 +1,4 @@
 flask
 gunicorn
 slack_sdk
+google-cloud-storage

@@ -1,5 +1,3 @@
-from ast import Slice
-from multiprocessing.dummy import Array
 from flask import Flask, request
 import json
 import os
