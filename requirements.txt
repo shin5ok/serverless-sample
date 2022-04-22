@@ -1,4 +1,0 @@
-sqlalchemy-spanner
-click
-flask
-gunicorn
