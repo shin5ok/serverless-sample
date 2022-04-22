@@ -1,19 +1,21 @@
+from ast import Slice
+from multiprocessing.dummy import Array
 from flask import Flask, request
 import json
 import os
 
 from db import MySpanner
 
-app = Flask(__name__)
-instance_id = os.environ.get("INSTANCE_ID")
-database_id = os.environ.get("DATABASE_ID")
+app: str= Flask(__name__)
+instance_id: str = os.environ.get("INSTANCE_ID")
+database_id: str = os.environ.get("DATABASE_ID")
 
 @app.route("/test")
-def _test():
+def _test() -> Slice:
     return "ok\n", 200
 
 @app.route("/api/<string:name>/<int:age>")
-def _root(name, age):
+def _root(name: str, age: str) -> Slice:
     s = MySpanner(instance_id, database_id)
     s.insert_with_dml(name, age)
     return json.dumps({}, indent=2), 200
