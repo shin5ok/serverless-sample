@@ -23,20 +23,20 @@ class MySpanner:
     def query_data(self, name: str) -> any:
         with self.database.snapshot() as snapshot:
             results = snapshot.execute_sql(
-                "SELECT name,age from test where name = @name",
+                "SELECT id,name,age from test where name = @name",
                 params={"name": name},
-                params_types={"name": spanner.param_types.STRING}
+                param_types={"name": spanner.param_types.STRING}
             )
         return results
 
     def insert_with_dml(self, name: str, age: int) -> None: 
 
         def insert_singers(transaction):
-            id = uuid4()
+            id = str(uuid4())
             row_ct = transaction.execute_update(
-                "INSERT Singers (id, name, age) VALUES (@id, @name, @age)",
+                "INSERT test (id, name, age) VALUES (@id, @name, @age)",
                 params={"id":id, "name":name, "age":age},
-                params_types={"name": spanner.param_types.STRING, "id": spanner.param_types.STRING, age: spanner.param_types.INT64}
+                param_types={"name": spanner.param_types.STRING, "id": spanner.param_types.STRING, "age": spanner.param_types.INT64}
             )
             print("{} record(s) inserted.".format(row_ct))
 
@@ -48,3 +48,5 @@ if __name__ == '__main__':
     print(instance_id, database_id)
     s = MySpanner(instance_id, database_id)
     s.insert_with_dml("foo", 100)
+    for v in s.query_data("foo"):
+        print(v)
