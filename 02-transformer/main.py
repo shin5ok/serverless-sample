@@ -3,6 +3,7 @@ from multiprocessing.dummy import Array
 from flask import Flask, request
 import json
 import os
+import pathlib
 from datetime import datetime
 
 from db import MySpanner
@@ -22,18 +23,23 @@ def _main(id: str) -> any:
     json_file: str = f"{id}-{datetime.now().strftime('%Y%m%d%H%M%S')}.json"
     s = MySpanner(instance_id, database_id)
     result_data: list[str] = []
+
+    code = 500
     try:
         for v in s.query_data(id):
             result_data.append(v)
 
         with open(json_file, "w") as f:
             f.write(json.dumps({"id":id, "data": result_data}))
-        gcs = MyGCS(bucket_name)
-        gcs.upload_blob(json_file, json_file)
-        return json.dumps({"file":json_file}),200
+        cs = MyGCS(bucket_name)
+        cs.upload_blob(json_file, json_file)
+        pathlib.Path(json_file).unlink()
+        code = 200
+
     except Exception as e:
         print(str(e))
-        return json.dumps({}), 500
+
+    return json.dumps({"file":json_file}),code
 
 
 if __name__ == '__main__':

@@ -32,7 +32,8 @@ class MySpanner:
     def insert_with_dml(self, name: str, age: int) -> str:
 
         def insert_record(transaction) -> str:
-            id = str(uuid4())
+
+            id: str = str(uuid4())
             row_ct = transaction.execute_update(
                 "INSERT test (id, name, age) VALUES (@id, @name, @age)",
                 params={"id":id, "name":name, "age":age},
