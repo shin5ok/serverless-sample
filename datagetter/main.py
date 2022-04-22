@@ -1,52 +1,22 @@
-import argparse
-import base64
-import datetime
-import decimal
+from flask import Flask, request
 import json
-import logging
-import time
-from uuid import uuid4
+import os
 
-from google.cloud import spanner
-from google.cloud.spanner_v1 import param_types
+from db import MySpanner
 
-OPERATION_TIMEOUT_SECONDS = 240
+app = Flask(__name__)
+instance_id = os.environ.get("INSTANCE_ID")
+database_id = os.environ.get("DATABASE_ID")
 
-class MySpanner:
+@app.route("/test")
+def _test():
+    return "ok\n", 200
 
-    def __init__(self, instance_id, database_id):
-        spanner_client = spanner.Client()
-        instance = spanner_client.instance(instance_id)
-        self.database = instance.database(database_id)
-
-
-    def query_data(self, name: str) -> any:
-        with self.database.snapshot() as snapshot:
-            results = snapshot.execute_sql(
-                "SELECT id,name,age from test where name = @name",
-                params={"name": name},
-                param_types={"name": spanner.param_types.STRING}
-            )
-        return results
-
-    def insert_with_dml(self, name: str, age: int) -> None: 
-
-        def insert_singers(transaction):
-            id = str(uuid4())
-            row_ct = transaction.execute_update(
-                "INSERT test (id, name, age) VALUES (@id, @name, @age)",
-                params={"id":id, "name":name, "age":age},
-                param_types={"name": spanner.param_types.STRING, "id": spanner.param_types.STRING, "age": spanner.param_types.INT64}
-            )
-            print("{} record(s) inserted.".format(row_ct))
-
-        self.database.run_in_transaction(insert_singers)
+@app.route("/api/<string:name>/<int:age>")
+def _root(name, age):
+    s = MySpanner(instance_id, database_id)
+    s.insert_with_dml(name, age)
+    return json.dumps({}, indent=2), 200
 
 if __name__ == '__main__':
-    import sys
-    instance_id, database_id = sys.argv[1:3]
-    print(instance_id, database_id)
-    s = MySpanner(instance_id, database_id)
-    s.insert_with_dml("foo", 100)
-    for v in s.query_data("foo"):
-        print(v)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

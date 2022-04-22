@@ -31,7 +31,7 @@ class MySpanner:
 
     def insert_with_dml(self, name: str, age: int) -> None: 
 
-        def insert_singers(transaction):
+        def insert_record(transaction):
             id = str(uuid4())
             row_ct = transaction.execute_update(
                 "INSERT test (id, name, age) VALUES (@id, @name, @age)",
@@ -40,7 +40,7 @@ class MySpanner:
             )
             print("{} record(s) inserted.".format(row_ct))
 
-        self.database.run_in_transaction(insert_singers)
+        self.database.run_in_transaction(insert_record)
 
 if __name__ == '__main__':
     import sys
