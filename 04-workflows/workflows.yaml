@@ -1,14 +1,14 @@
 - datagetter:
     call: http.get
     args:
-        url: {DATAGETTER_URL}/api/gen
+        url: ${DATAGETTER_URL}/api/gen
         auth:
             type: OIDC
     result: datagetter_result
 - transformer:
     call: http.post
     args:
-        url: {TRANSFER_URL}/api/transform
+        url: ${TRANSFER_URL}/api/transform
         auth:
             type: OIDC
         body:
@@ -19,7 +19,7 @@
 - requester:
     call: http.post
     args:
-        url: {REQUESTER_URL}/api/request
+        url: ${REQUESTER_URL}/api/request
         auth:
             type: OIDC
         body:
