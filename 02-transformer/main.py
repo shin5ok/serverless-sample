@@ -8,28 +8,30 @@ from db import MySpanner
 from gcs import MyGCS
 
 app: str= Flask(__name__)
-instance_id: str = os.environ.get("INSTANCE_ID")
-database_id: str = os.environ.get("DATABASE_ID")
-bucket_name: str = os.environ.get("BUCKET_NAME")
+INSTANCE_ID: str = os.environ.get("INSTANCE_ID")
+DATABASE_ID: str = os.environ.get("DATABASE_ID")
+BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 
 @app.route("/test")
 def _test() -> any:
     return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
 
-@app.route("/api/transform/<string:id>", methods=["POST"])
-def _main(id: str) -> any:
+@app.route("/api/transform", methods=["POST"])
+def _main() -> any:
+    posted: dict = request.get_json()
+    id: str = posted['id']
     json_file: str = f"{id}-{datetime.now().strftime('%Y%m%d%H%M%S')}.json"
-    s = MySpanner(instance_id, database_id)
     result_data: list[str] = []
 
     code = 500
     try:
+        s = MySpanner(INSTANCE_ID, DATABASE_ID)
         for v in s.query_data(id):
             result_data.append(v)
 
         with open(json_file, "w") as f:
             f.write(json.dumps({"id":id, "data": result_data}))
-        cs = MyGCS(bucket_name)
+        cs = MyGCS(BUCKET_NAME)
         cs.upload_blob(json_file, json_file)
         pathlib.Path(json_file).unlink()
         code = 200

@@ -9,7 +9,7 @@ import pathlib
 
 from gcs import MyGCS
 
-bucket_name: str = os.environ.get("BUCKET_NAME")
+BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 SLACK_API: str = os.environ.get("SLACK_API")
 
 app: str = Flask(__name__)
@@ -18,9 +18,11 @@ app: str = Flask(__name__)
 def _test() -> any:
     return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
 
-@app.route("/api/request/<string:file>", methods=["POST"])
-def _main(file: str) -> any:
-    cs = MyGCS(bucket_name)
+@app.route("/api/request", methods=["POST"])
+def _main() -> any:
+    posted: dict = request.get_json()
+    file: str = posted['file']
+    cs: MyGCS = MyGCS(BUCKET_NAME)
     cs.download_blob(file, file)
     with open(file) as f:
         data = json.loads(f.read())
