@@ -1,6 +1,6 @@
 from ast import Slice
 from multiprocessing.dummy import Array
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import json
 import os
 
@@ -18,7 +18,7 @@ def _test() -> any:
 def _main(name: str, score: str) -> any:
     s = MySpanner(instance_id, database_id)
     id: str = s.insert_with_dml(name, score)
-    return json.dumps({"name":name, "id": id}, indent=2), 200
+    return jsonify({"name":name, "id": id}), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

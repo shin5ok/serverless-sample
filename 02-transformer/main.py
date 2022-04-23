@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import json
 import os
 import pathlib
@@ -37,7 +37,7 @@ def _main(id: str) -> any:
     except Exception as e:
         print(str(e))
 
-    return json.dumps({"file":json_file}),code
+    return jsonify({"file":json_file}),code
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 from ast import Slice
 from distutils import file_util
 from multiprocessing.dummy import Array
-from flask import Flask, request
+from flask import Flask, jsonify, request
 import json
 import os
 from slack_sdk.webhook import WebhookClient
@@ -27,7 +27,7 @@ def _main(file: str) -> any:
         webhook = WebhookClient(SLACK_API)
         response = webhook.send(text=data['id'])
         pathlib.Path(file).unlink()
-    return json.dumps({}), 200
+    return jsonify({}), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
