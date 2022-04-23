@@ -1,0 +1,31 @@
+- datagetter:
+    call: http.get
+    args:
+        url: https://datagetter-g6krvunj5q-uc.a.run.app/api/gen
+        auth:
+            type: OIDC
+    result: datagetter_result
+- transformer:
+    call: http.post
+    args:
+        url: https://transformer-g6krvunj5q-uc.a.run.app/api/transform
+        auth:
+            type: OIDC
+        body:
+            id: ${datagetter_result.body.id}
+        headers:
+            "Content-Type": "application/json"
+    result: transformer_result
+- requester:
+    call: http.post
+    args:
+        url: https://requester-g6krvunj5q-uc.a.run.app/api/request
+        auth:
+            type: OIDC
+        body:
+            file: ${transformer_result.body.file}
+        headers:
+            "Content-Type": "application/json"
+    result: requester_result
+- return_result:
+    return: ${requester_result}
