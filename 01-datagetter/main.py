@@ -14,10 +14,10 @@ database_id: str = os.environ.get("DATABASE_ID")
 def _test() -> any:
     return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
 
-@app.route("/api/<string:name>/<int:age>", methods=["POST"])
-def _main(name: str, age: str) -> any:
+@app.route("/api/<string:name>/<int:score>", methods=["POST"])
+def _main(name: str, score: str) -> any:
     s = MySpanner(instance_id, database_id)
-    id: str = s.insert_with_dml(name, age)
+    id: str = s.insert_with_dml(name, score)
     return json.dumps({"name":name, "id": id}, indent=2), 200
 
 if __name__ == '__main__':
