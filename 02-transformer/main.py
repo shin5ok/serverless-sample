@@ -4,7 +4,8 @@ import os
 import pathlib
 from datetime import datetime
 
-from db import MySpanner
+from dbapi import MySpanner
+# from db import MySpanner
 from gcs import MyGCS
 
 app: str= Flask(__name__)

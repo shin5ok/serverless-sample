@@ -5,7 +5,8 @@ import json
 import os
 import requests
 
-from db import MySpanner
+# from db import MySpanner
+from dbapi import MySpanner
 
 app: str = Flask(__name__)
 INSTANCE_ID: str = os.environ.get("INSTANCE_ID")
