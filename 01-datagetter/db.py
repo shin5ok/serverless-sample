@@ -12,6 +12,7 @@ from google.cloud.spanner_v1 import param_types
 
 OPERATION_TIMEOUT_SECONDS = 240
 
+
 class MySpanner:
 
     def __init__(self, instance_id: str, database_id: str) -> None:
@@ -49,6 +50,6 @@ if __name__ == '__main__':
     instance_id, database_id = sys.argv[1:3]
     print(instance_id, database_id)
     s = MySpanner(instance_id, database_id)
-    s.insert_with_dml("foo", 100)
-    for v in s.query_data("foo"):
+    id = s.insert_with_dml("foo", 100)
+    for v in s.query_data(id):
         print(v)
