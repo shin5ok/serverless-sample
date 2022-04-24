@@ -8,6 +8,6 @@ echo $ID
 FILE=$(echo "{\"id\":\"$ID\"}" | curl -X POST -H "Content-Type: application/json" $TRANSFORMER_URL/api/transform -d @- | jq .file -r)
 echo $FILE
 
-echo "{\"file\": \"$FILE\"}" | curl -X POST -H "Content-Type: application/json" $REQUEST_URL/api/request -d @-
+echo "{\"file\": \"$FILE\"}" | curl -X POST -H "Content-Type: application/json" $REQUESTER_URL/api/request -d @-
 
 # gcloud workflows run $WORKFLOW_ID
