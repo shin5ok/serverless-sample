@@ -27,10 +27,11 @@ def _main() -> any:
     try:
         s = MySpanner(INSTANCE_ID, DATABASE_ID)
         for v in s.query_data(id):
-            result_data.append(v)
+            conv_v: dict = {"id": v[0], "name":v[1], "score":v[2] * 2}
+            result_data.append(conv_v)
 
         with open(json_file, "w") as f:
-            f.write(json.dumps({"id":id, "data": result_data}))
+            f.write(json.dumps({"data": result_data}))
         cs = MyGCS(BUCKET_NAME)
         cs.upload_blob(json_file, json_file)
         pathlib.Path(json_file).unlink()
