@@ -26,7 +26,7 @@ class MySpanner:
         connection.autocommit = True
         cursor = connection.cursor()
         id: str = str(uuid.uuid4())
-        # you must use secure query in production, like sql placeholder
+        # !!! You must use secure query in production, like sql placeholder !!!
         sql: str = f"INSERT into test (id, name, score) VALUES ('{id}', '{name}', {score})"
         print(sql)
         cursor.execute(sql)

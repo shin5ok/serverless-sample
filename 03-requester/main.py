@@ -12,7 +12,7 @@ from gcs import MyGCS
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 SLACK_API: str = os.environ.get("SLACK_API")
 
-app: str = Flask(__name__)
+app: any = Flask(__name__)
 
 @app.route("/test")
 def _test() -> any:

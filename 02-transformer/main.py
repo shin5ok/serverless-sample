@@ -8,7 +8,7 @@ from dbapi import MySpanner
 # from db import MySpanner
 from gcs import MyGCS
 
-app: str= Flask(__name__)
+app: any = Flask(__name__)
 INSTANCE_ID: str = os.environ.get("INSTANCE_ID")
 DATABASE_ID: str = os.environ.get("DATABASE_ID")
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")

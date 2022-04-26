@@ -8,7 +8,7 @@ import requests
 # from db import MySpanner
 from dbapi import MySpanner
 
-app: str = Flask(__name__)
+app: any = Flask(__name__)
 INSTANCE_ID: str = os.environ.get("INSTANCE_ID")
 DATABASE_ID: str = os.environ.get("DATABASE_ID")
 EXTERNAL_API: str = os.environ.get("EXTERNAL_API")
