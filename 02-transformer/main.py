@@ -4,7 +4,7 @@ import os
 import pathlib
 from datetime import datetime
 
-from dbapi import MySpanner
+from db import MySpanner
 # from db import MySpanner
 from gcs import MyGCS
 
