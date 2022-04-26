@@ -1,3 +1,3 @@
-flask
-gunicorn
-google-cloud-spanner
+Flask==2.1.1
+google-cloud-spanner==3.13.0
+gunicorn==20.1.0
