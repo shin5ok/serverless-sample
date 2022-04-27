@@ -1,6 +1,7 @@
 import uuid
 
 from google.cloud.spanner_dbapi import connect
+from typing import Any
 
 class MySpanner:
 
@@ -13,11 +14,11 @@ class MySpanner:
     def __del__(self) -> None:
         self.connection.close()
 
-    def query_data(self, id: str) -> any:
+    def query_data(self, id: str) -> Any:
         connection = self.connection
         cursor = connection.cursor()
         cursor.execute("""SELECT id,name,score FROM test WHERE id=%s""", [id])
-        results: list[any] = cursor.fetchall()
+        results: list[Any] = cursor.fetchall()
         connection.close()
         return results
     

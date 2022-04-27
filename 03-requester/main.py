@@ -7,19 +7,21 @@ import os
 from slack_sdk.webhook import WebhookClient
 import pathlib
 
+from typing import Any
+
 from gcs import MyGCS
 
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 SLACK_API: str = os.environ.get("SLACK_API")
 
-app: any = Flask(__name__)
+app: Any = Flask(__name__)
 
 @app.route("/test")
-def _test() -> any:
+def _test() -> Any:
     return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
 
 @app.route("/api/request", methods=["POST"])
-def _main() -> any:
+def _main() -> Any:
     posted: dict = request.get_json()
     file: str = posted['file']
     cs: MyGCS = MyGCS(BUCKET_NAME)

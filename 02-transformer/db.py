@@ -7,6 +7,8 @@ import logging
 import time
 from uuid import uuid4
 
+from typing import Any
+
 from google.cloud import spanner
 from google.cloud.spanner_v1 import param_types
 
@@ -20,7 +22,7 @@ class MySpanner:
         self.database = instance.database(database_id)
 
 
-    def query_data(self, id: str) -> any:
+    def query_data(self, id: str) -> Any:
         with self.database.snapshot() as snapshot:
             results = snapshot.execute_sql(
                 "SELECT id,name,score from test where id = @id",
