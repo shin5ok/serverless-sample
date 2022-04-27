@@ -4,27 +4,28 @@ from flask import Flask, jsonify, request
 import json
 import os
 import requests
+from typing import Any
 
 # from db import MySpanner
 from db import MySpanner
 
-app: any = Flask(__name__)
+app: Any = Flask(__name__)
 INSTANCE_ID: str = os.environ.get("INSTANCE_ID")
 DATABASE_ID: str = os.environ.get("DATABASE_ID")
 EXTERNAL_API: str = os.environ.get("EXTERNAL_API")
 
 @app.route("/test")
-def _test() -> any:
+def _test() -> Any:
     return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
 
 @app.route("/api/<string:name>/<int:score>", methods=["POST"])
-def _pathinfo(name: str, score: str) -> any:
+def _pathinfo(name: str, score: str) -> Any:
     s = MySpanner(INSTANCE_ID, DATABASE_ID)
     id: str = s.insert_with_dml(name, score)
     return jsonify({"name":name, "id": id}), 200
 
 @app.route("/api/gen")
-def _main() -> any:
+def _main() -> Any:
     response = requests.get(EXTERNAL_API)
     data = json.loads(response.content)[0]
     s = MySpanner(INSTANCE_ID, DATABASE_ID)

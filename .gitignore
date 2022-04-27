@@ -133,3 +133,5 @@ dmypy.json
 
 tests/*
 tmp/*
+
+.mypy_cache/*
