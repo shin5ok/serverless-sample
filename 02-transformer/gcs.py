@@ -30,3 +30,13 @@ class MyGCS:
                 source_blob_name, self.bucket_name, destination_file_name
             )
         )
+
+if __name__ == '__main__':
+    import sys
+    import uuid
+    import pathlib
+    cs = MyGCS(sys.argv[1])
+    tmp = str(uuid.uuid4())
+    cs.upload_blob("/etc/services", tmp)
+    cs.download_blob(tmp, tmp)
+    pathlib.Path(tmp).unlink()
