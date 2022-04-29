@@ -9,16 +9,16 @@ from typing import Any
 from db import MySpanner
 
 app: Any = Flask(__name__)
-INSTANCE_ID: str = os.environ.get("INSTANCE_ID")
-DATABASE_ID: str = os.environ.get("DATABASE_ID")
-EXTERNAL_API: str = os.environ.get("EXTERNAL_API")
+INSTANCE_ID: str = os.environ.get("INSTANCE_ID", "")
+DATABASE_ID: str = os.environ.get("DATABASE_ID", "")
+EXTERNAL_API: str = os.environ.get("EXTERNAL_API", "")
 
 @app.route("/test")
 def _test() -> Any:
     return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
 
 @app.route("/api/<string:name>/<int:score>", methods=["POST"])
-def _pathinfo(name: str, score: str) -> Any:
+def _pathinfo(name: str, score: int) -> Any:
     s = MySpanner(INSTANCE_ID, DATABASE_ID)
     id: str = s.insert_with_dml(name, score)
     return jsonify({"name":name, "id": id}), 200
@@ -26,7 +26,7 @@ def _pathinfo(name: str, score: str) -> Any:
 @app.route("/api/gen")
 def _main() -> Any:
     response = requests.get(EXTERNAL_API)
-    data = json.loads(response.content)[0]
+    data: dict = json.loads(response.content)[0]
     s = MySpanner(INSTANCE_ID, DATABASE_ID)
     id: str = s.insert_with_dml(data['name'], data['score'])
     return jsonify({"name":data['name'], "id": id}), 200

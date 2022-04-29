@@ -32,7 +32,7 @@ class MySpanner:
             )
         return results
 
-    def insert_with_dml(self, name: str, score: int) -> str:
+    def insert_with_dml(self, name: str, score: int) -> Any:
 
         def insert_record(transaction) -> str:
 

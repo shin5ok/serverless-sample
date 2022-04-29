@@ -11,8 +11,8 @@ from typing import Any
 
 from gcs import MyGCS
 
-BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
-SLACK_API: str = os.environ.get("SLACK_API")
+BUCKET_NAME: str = os.environ.get("BUCKET_NAME", "")
+SLACK_API: str = os.environ.get("SLACK_API", "")
 
 app: Any = Flask(__name__)
 
@@ -27,11 +27,13 @@ def _main() -> Any:
     cs: MyGCS = MyGCS(BUCKET_NAME)
     cs.download_blob(file, file)
     with open(file) as f:
-        data = json.loads(f.read())
+        data: dict = json.loads(f.read())
         send_data: list = [x["id"] for x in data["data"]]
 
         webhook = WebhookClient(SLACK_API)
-        response = webhook.send(text=",".join(send_data))
+        response: Any = webhook.send(text=",".join(send_data))
+        if response.status_code != 200:
+            print("Sending webhook to slack was failure")
 
         pathlib.Path(file).unlink()
     return jsonify({}), 200
