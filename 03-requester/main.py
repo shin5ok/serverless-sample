@@ -28,7 +28,7 @@ def _main() -> Any:
     cs.download_blob(file, file)
     with open(file) as f:
         data = json.loads(f.read())
-        send_data: str = [x["id"] for x in data["data"]]
+        send_data: list = [x["id"] for x in data["data"]]
 
         webhook = WebhookClient(SLACK_API)
         response = webhook.send(text=",".join(send_data))
