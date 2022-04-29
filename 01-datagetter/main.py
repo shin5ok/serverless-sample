@@ -6,7 +6,6 @@ import os
 import requests
 from typing import Any
 
-# from db import MySpanner
 from db import MySpanner
 
 app: Any = Flask(__name__)

@@ -12,7 +12,7 @@ from typing import Any
 from google.cloud import spanner
 from google.cloud.spanner_v1 import param_types
 
-OPERATION_TIMEOUT_SECONDS = 240
+OPERATION_TIMEOUT_SECONDS: int = 240
 
 class MySpanner:
 

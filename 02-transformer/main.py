@@ -7,7 +7,6 @@ from datetime import datetime
 from typing import Any
 
 from db import MySpanner
-# from db import MySpanner
 from gcs import MyGCS
 
 app: Any = Flask(__name__)
