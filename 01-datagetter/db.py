@@ -48,10 +48,13 @@ class MySpanner:
         return self.database.run_in_transaction(insert_record)
 
 if __name__ == '__main__':
-    import sys
-    instance_id, database_id = sys.argv[1:3]
-    print(instance_id, database_id)
-    s = MySpanner(instance_id, database_id)
-    id = s.insert_with_dml("foo", 100)
-    for v in s.query_data(id):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("instance_id", type=str)
+    parser.add_argument("database_id", type=str)
+    args = parser.parse_args()
+    print(args.instance_id, args.database_id)
+    s = MySpanner(args.instance_id, args.database_id)
+    import random
+    s.insert_with_dml("foo", random.randrange(100))
+    for v in s.query_data("foo"):
         print(v)
