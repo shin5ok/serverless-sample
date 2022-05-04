@@ -32,10 +32,14 @@ class MyGCS:
         )
 
 if __name__ == '__main__':
-    import sys
     import uuid
     import pathlib
-    cs = MyGCS(sys.argv[1])
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("gcs", type=str)
+    args = parser.parse_args()
+    cs = MyGCS(args.gcs)
     tmp = str(uuid.uuid4())
     cs.upload_blob("/etc/services", tmp)
     cs.download_blob(tmp, tmp)
