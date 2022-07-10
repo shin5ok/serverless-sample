@@ -5,15 +5,16 @@ from fastapi import FastAPI, Depends
 import os
 import requests
 from typing import Any
-import routers.api
+import routers.api, routers.test
 import uvicorn
 
 from db import MySpanner
-from common import is_valid_header, get_spanner
+from common import is_valid_header, get_spanner, get_external_api_url
 
 app: Any = FastAPI()
 PORT: int = os.environ.get("PORT", 8080)
-app.include_router(routers.api.routers, prefix="/api", dependencies=[Depends(get_spanner)])
+app.include_router(routers.api.routers, prefix="/api", dependencies=[Depends(get_spanner),Depends(get_external_api_url)])
+app.include_router(routers.test.routers)
 
 if __name__ == '__main__':
     options = {
