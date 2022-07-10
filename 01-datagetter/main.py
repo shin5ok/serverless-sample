@@ -1,35 +1,46 @@
 from ast import Slice
 from multiprocessing.dummy import Array
-from flask import Flask, jsonify, request
 import json
+from fastapi import FastAPI, Depends
 import os
 import requests
 from typing import Any
+import routers.api
+import uvicorn
 
 from db import MySpanner
+from common import is_valid_header, get_spanner
 
-app: Any = Flask(__name__)
-INSTANCE_ID: str = os.environ.get("INSTANCE_ID", "")
-DATABASE_ID: str = os.environ.get("DATABASE_ID", "")
-EXTERNAL_API: str = os.environ.get("EXTERNAL_API", "")
+app: Any = FastAPI()
+PORT: int = os.environ.get("PORT", 8080)
+app.include_router(routers.api.routers, prefix="/api", dependencies=[Depends(get_spanner)])
 
-@app.route("/test")
-def _test() -> Any:
-    return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
+if __name__ == '__main__':
+    options = {
+        'port': PORT, 
+        'host': '0.0.0.0',
+        'workers': 2,
+        'reload': True,
+    }
+    uvicorn.run("main:app", **options)
 
-@app.route("/api/<string:name>/<int:score>", methods=["POST"])
-def _pathinfo(name: str, score: int) -> Any:
-    s = MySpanner(INSTANCE_ID, DATABASE_ID)
-    id: str = s.insert_with_dml(name, score)
-    return jsonify({"name":name, "id": id}), 200
-
-@app.route("/api/gen")
-def _main() -> Any:
-    response = requests.get(EXTERNAL_API)
-    data: dict = json.loads(response.content)[0]
-    s = MySpanner(INSTANCE_ID, DATABASE_ID)
-    id: str = s.insert_with_dml(data['name'], data['score'])
-    return jsonify({"name":data['name'], "id": id}), 200
+#@app.route("/test")
+#def _test() -> Any:
+#    return f"{os.environ.get('K_SERVICE', 'local')} ok\n", 200
+#
+#@app.route("/api/<string:name>/<int:score>", methods=["POST"])
+#def _pathinfo(name: str, score: int) -> Any:
+#    s = MySpanner(INSTANCE_ID, DATABASE_ID)
+#    id: str = s.insert_with_dml(name, score)
+#    return jsonify({"name":name, "id": id}), 200
+#
+#@app.route("/api/gen")
+#def _main() -> Any:
+#    response = requests.get(EXTERNAL_API)
+#    data: dict = json.loads(response.content)[0]
+#    s = MySpanner(INSTANCE_ID, DATABASE_ID)
+#    id: str = s.insert_with_dml(data['name'], data['score'])
+#    return jsonify({"name":data['name'], "id": id}), 200
 
 
 if __name__ == '__main__':
